@@ -1,0 +1,23 @@
+{
+  "name": "betsie",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Betsie — hi-fi coded recreation of the Betsie Figma prototype",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "scene": "node figma/build-scene.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/passion-one": "^5.3.0",
+    "@fontsource/roboto": "^5.3.0"
+  }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1e1e1e" />
+    <title>Betsie — Prototype</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <aside class="side">
+      <h1>Betsie</h1>
+      <h2>Flows</h2>
+      <div id="flows"></div>
+      <button class="tool" id="restart" type="button">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6a3.5 3.5 0 1 0 1.03-2.47M2.5 1.5v2.2h2.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Restart
+      </button>
+      <div class="foot">
+        <div><b id="frame-name"></b></div>
+        <div>Click to interact. <kbd>R</kbd> restarts, <kbd>←</kbd> goes back.</div>
+      </div>
+    </aside>
+    <main class="view" id="view">
+      <div class="scaler" id="scaler">
+        <i class="btn action"></i><i class="btn vol-up"></i><i class="btn vol-down"></i><i class="btn power"></i>
+        <div class="screen">
+          <div id="stage"></div>
+          <div id="hints"></div>
+        </div>
+      </div>
+    </main>
+    <button id="menu" type="button" aria-label="Flows">
+      <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

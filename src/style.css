@@ -1,0 +1,140 @@
+:root {
+  --sf-text: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter SF", system-ui, sans-serif;
+  --sf: "SF Pro", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter SF", system-ui, sans-serif;
+  --sf-display: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter SF", system-ui, sans-serif;
+  --canvas: #1e1e1e;
+  --panel: #2c2c2c;
+  --line: #3a3a3a;
+  --ink: #ffffff;
+  --muted: #a5a5a5;
+  --accent: #0d99ff;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font: 12px/1.4 "Inter SF", system-ui, sans-serif;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ---------- viewer shell (Figma's prototype sidebar) ---------- */
+.side {
+  width: 240px;
+  flex: none;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px;
+  gap: 4px;
+  z-index: 2;
+}
+.side h1 { font-size: 13px; font-weight: 600; margin: 4px 8px 12px; }
+.side h2 { font-size: 11px; font-weight: 500; color: var(--muted); margin: 8px 8px 4px; }
+.flow, .side .tool {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 7px 8px; border: 0; border-radius: 5px;
+  background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+}
+.flow svg { color: var(--muted); flex: none; }
+.flow:hover, .side .tool:hover { background: #383838; }
+.flow.on { background: var(--accent); }
+.flow.on svg { color: var(--ink); }
+.side .foot { margin-top: auto; padding: 8px; color: var(--muted); }
+.side .foot b { color: var(--ink); font-weight: 500; }
+.side kbd { font: inherit; padding: 0 4px; border: 1px solid #555; border-radius: 3px; }
+
+#menu { display: none; }
+
+.view {
+  flex: 1;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+/* Desktop: the prototype sits in an iPhone (6.7", 430 x 932 pt) frame. */
+.scaler {
+  --bezel: 16px;
+  --screen-radius: 55px;
+  position: absolute; left: 50%; top: 50%; transform-origin: center;
+  padding: var(--bezel);
+  border-radius: calc(var(--screen-radius) + var(--bezel));
+  background: #050505;
+  box-shadow:
+    0 0 0 2px #2e2e30,
+    0 0 0 4px #9a9a9f,
+    0 0 0 5px #48484a,
+    0 30px 80px rgba(0, 0, 0, 0.55);
+}
+.screen {
+  position: relative; width: 100%; height: 100%;
+  border-radius: var(--screen-radius);
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn { position: absolute; width: 5px; border-radius: 2px; background: linear-gradient(90deg, #6e6e73, #b5b5ba 45%, #6e6e73); }
+.btn.action { left: -9px; top: 150px; height: 32px; }
+.btn.vol-up { left: -9px; top: 215px; height: 62px; }
+.btn.vol-down { left: -9px; top: 292px; height: 62px; }
+.btn.power { right: -9px; top: 245px; height: 100px; }
+#stage { position: absolute; inset: 0; overflow: hidden; touch-action: pan-x pan-y; }
+#hints { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.hint {
+  position: absolute;
+  background: rgba(13, 153, 255, 0.25);
+  border: 1px solid rgba(13, 153, 255, 0.7);
+  animation: hint 0.7s ease-out forwards;
+}
+@keyframes hint { 0%, 50% { opacity: 1; } 100% { opacity: 0; } }
+
+body.phone .side {
+  position: fixed; inset: 0 auto 0 0; transform: translateX(-100%);
+  transition: transform 0.2s ease-out; box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+body.phone.menu .side { transform: none; }
+body.phone .view { place-items: start center; }
+body.phone { background: #000; }
+body.phone .scaler {
+  --bezel: 0px; --screen-radius: 0px;
+  top: 0; transform-origin: top center; background: none; box-shadow: none;
+}
+body.phone .btn { display: none; }
+body.phone #menu {
+  display: grid; place-items: center; position: fixed; right: 12px; bottom: 12px; z-index: 3;
+  width: 36px; height: 36px; border-radius: 18px; border: 0;
+  background: rgba(44, 44, 44, 0.85); color: var(--ink); cursor: pointer;
+}
+
+body.still { display: block; overflow: visible; background: #fff; }
+
+/* ---------- scene ---------- */
+.frame {
+  position: absolute; left: 0; top: 0;
+  user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
+  color: #000;
+}
+.n { position: absolute; margin: 0; transform-origin: 0 0; }
+img.n { display: block; max-width: none; }
+.t { display: flex; flex-direction: column; white-space: pre-wrap; }
+.t p { margin: 0; }
+.t .li { position: absolute; }
+.fl { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+.cl { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
+.sc-x { overflow-x: auto; overflow-y: hidden; }
+.sc-y { overflow-y: auto; overflow-x: hidden; }
+.sc-xy { overflow: auto; }
+.sc-x, .sc-y, .sc-xy { scrollbar-width: none; overscroll-behavior: contain; }
+.sc-x::-webkit-scrollbar, .sc-y::-webkit-scrollbar, .sc-xy::-webkit-scrollbar { display: none; }
+.st { position: absolute; pointer-events: none; }
+.mk { pointer-events: none; }
+.mk > * { pointer-events: auto; }
+.hs { cursor: pointer; }
