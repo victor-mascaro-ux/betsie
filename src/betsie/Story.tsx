@@ -7,6 +7,7 @@ import { firstName, person } from '../data/people';
 import { useAppState } from '../data/store';
 import { opponent } from '../data/stats';
 import { usePhone } from '../os/context';
+import { emit } from '../lib/ui';
 import { StatPills, VsHeader } from './chrome';
 
 export function Story({ id, onBack }: { id: string; onBack: () => void }) {
@@ -17,7 +18,7 @@ export function Story({ id, onBack }: { id: string; onBack: () => void }) {
   useEffect(() => { setStatusLight(true); return () => setStatusLight(false); }, [setStatusLight]);
   const winner = bet.winner || bet.by;
   const loser = opponent(bet, winner);
-  const post = (to: string) => { setPosted(to); setTimeout(onBack, 1100); };
+  const post = (to: string) => { setPosted(to); emit('story-posted', me); setTimeout(onBack, 1100); };
   const last = bet.comments.filter((c) => c.sticker || c.text).slice(-1)[0];
 
   return (

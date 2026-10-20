@@ -10,6 +10,16 @@ npm install
 npm run dev        # http://localhost:5181
 ```
 
+## Guided tour
+
+The left column walks anyone through the prototype **one task at a time**: wake Maxine’s phone,
+text Sylvia a bet, turn it into a Betsie bet, accept it, set the stakes, talk trash, skip to the
+end, vote, celebrate and share. Each task has a **Show me** button that does it on the phones while
+you watch (a touch indicator taps, keys light up as it types). Do it yourself instead and the tour
+notices and moves on; a pulsing ring shows where to tap after a couple of seconds. **Start Over**
+puts everything back. On desktop, choose **Both phones** or **One phone** (the phone experience,
+switching to whoever the task is about). On a phone, the task sits under the screen.
+
 ## What you can do
 
 Two phones run side by side on desktop: **Maxine’s** and **Sylvia’s**. Whatever one does shows up

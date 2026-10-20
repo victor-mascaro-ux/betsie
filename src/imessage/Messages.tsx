@@ -1,7 +1,7 @@
 // Messages: conversations between the two phones, plus Betsie's group thread
 // where the bot reports on bets made from iMessage. Betsie also runs inside
 // iMessage as an app (the clover next to "I bet…", or the + drawer).
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type TextareaHTMLAttributes } from 'react';
 import backIcon from '../assets/imessage/back.svg';
 import chevron from '../assets/imessage/chevron.svg';
 import facetime from '../assets/imessage/facetime.svg';
@@ -13,6 +13,7 @@ import { betsieThread, isBetsieThread, pairThread, threadPeople } from '../data/
 import type { Message, PersonId } from '../data/types';
 import { ago, chatStamp, useNow } from '../lib/time';
 import { usePhone, type Link } from '../os/context';
+import { reportUi } from '../lib/ui';
 import { BotCard } from './BotCard';
 import '../styles/imessage.css';
 
@@ -24,6 +25,18 @@ export const betFromText = (t: string) => {
   return /[.!?]$/.test(s) ? s : `${s}.`;
 };
 
+/** The message field grows with what you type (up to five lines, then it scrolls). */
+function GrowingField(props: TextareaHTMLAttributes<HTMLTextAreaElement> & { value: string }) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 22 * 5 + 14)}px`;
+  }, [props.value]);
+  return <textarea ref={ref} rows={1} {...props} />;
+}
+
 export function Messages({ link, active }: { link?: Link; active: boolean }) {
   const { me } = usePhone();
   const other: PersonId = me === 'maxine' ? 'sylvia' : 'maxine';
@@ -31,6 +44,7 @@ export function Messages({ link, active }: { link?: Link; active: boolean }) {
   const [dir, setDir] = useState<'in' | 'out'>('in');
 
   useEffect(() => { if (link?.thread) { setDir('in'); setThread(link.thread); } }, [link?.n]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { reportUi(me, { thread }); }, [me, thread]);
 
   return (
     <div className="imsg">
@@ -63,7 +77,7 @@ function ThreadList({ other, dir, onOpen }: { other: PersonId; dir: 'in' | 'out'
         const them = threadPeople(id).filter((p) => p !== me);
         const group = isBetsieThread(id);
         return (
-          <button key={id} className="tl-row tap" style={{ animationDelay: `${i * 40}ms` }} onClick={() => onOpen(id)}>
+          <button key={id} className="tl-row tap" data-thread={id} style={{ animationDelay: `${i * 40}ms` }} onClick={() => onOpen(id)}>
             {unread > 0 ? <i className="tl-dot" /> : <i className="tl-dot off" />}
             <Avatars ids={them} group={group} size={52} />
             <span className="tl-text">
@@ -151,7 +165,7 @@ function Thread({ thread, active, dir, onBack, onOpenThread }: { thread: string;
           return (
             <Fragment key={m.id}>
               {stamp && <p className="th-stamp">iMessage<br />{chatStamp(m.at)}</p>}
-              <div className={`msg ${mine ? 'out' : 'in'}${lastOfRun ? ' tail' : ''}`}>
+              <div className={`msg ${mine ? 'out' : 'in'}${lastOfRun ? ' tail' : ''}${firstOfRun ? ' first' : ''}`}>
                 {!mine && (group || m.from === 'betsie') && (
                   <span className="msg-av">{lastOfRun && (m.from === 'betsie' ? <span className="av-clover small"><img src={clover} alt="" /></span> : <img src={person(m.from as PersonId).photo} alt="" />)}</span>
                 )}
@@ -173,12 +187,12 @@ function Thread({ thread, active, dir, onBack, onOpenThread }: { thread: string;
       <div className="th-compose">
         <button className={`th-plus tap${drawer ? ' on' : ''}`} onClick={() => setDrawer((d) => !d)} aria-label="Apps">+</button>
         <label className="th-input">
-          <input
+          <GrowingField
             value={text}
             placeholder="iMessage"
             data-sample={group ? 'comment' : 'imessage'}
             enterKeyHint="send"
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => setText(e.target.value.replace(/\s*\r?\n\s*/g, ' '))}
             onFocus={() => setDrawer(false)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } }}
           />

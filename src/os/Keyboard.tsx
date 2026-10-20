@@ -43,6 +43,24 @@ export function Keyboard({ target }: { target: Field | null }) {
   const lastShift = useRef(0);
   const lastSpace = useRef(0);
   const repeat = useRef<number | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // The guided tour types through the field; light up the key it "presses".
+  useEffect(() => {
+    const phone = rootRef.current?.closest('.phone');
+    if (!phone) return;
+    let t = 0;
+    const flash = (e: Event) => {
+      const ch = String((e as CustomEvent).detail);
+      const id = ch === ' ' ? 'space' : ch.toLowerCase();
+      if (!/^[a-z]$/.test(id) && id !== 'space') return;
+      setPressed(id);
+      clearTimeout(t);
+      t = window.setTimeout(() => setPressed(null), 90);
+    };
+    phone.addEventListener('betsie-keyflash', flash);
+    return () => { phone.removeEventListener('betsie-keyflash', flash); clearTimeout(t); };
+  }, []);
 
   useEffect(() => {
     if (!target) { setLayer('abc'); return; }
@@ -113,7 +131,7 @@ export function Keyboard({ target }: { target: Field | null }) {
   const sugg = suggestions(target);
 
   return (
-    <div className={`ios-kb${target ? ' up' : ''}`} onMouseDown={keep} role="group" aria-label="Keyboard">
+    <div ref={rootRef} className={`ios-kb${target ? ' up' : ''}`} onMouseDown={keep} role="group" aria-label="Keyboard">
       <div className="kb-suggest">
         {sugg.map((s, i) => <button key={i} {...press(`s${i}`, () => suggest(s))} className={pressed === `s${i}` ? 'down' : ''}>{s}</button>)}
       </div>

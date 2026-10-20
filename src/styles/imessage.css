@@ -43,7 +43,8 @@
 .th-list > :first-child { margin-top: auto; }
 .th-stamp { margin: 10px 0 6px; text-align: center; font: 400 10px/12.5px var(--roboto); color: #909093; }
 
-.msg { display: flex; padding: 1px 9px; animation: msg-in 0.5s var(--pop) both; }
+.msg { display: flex; padding: 2px 9px; animation: msg-in 0.5s var(--pop) both; }
+.msg.first { margin-top: 10px; }
 .msg.out { justify-content: flex-end; }
 .msg.in { justify-content: flex-start; }
 @keyframes msg-in { from { transform: translateY(14px) scale(0.92); opacity: 0; } }
@@ -51,10 +52,10 @@
 .msg.in { transform-origin: left bottom; }
 .msg-av { width: 41px; flex: none; align-self: flex-end; margin-right: 5px; }
 .msg-av img { width: 41px; height: 41px; border-radius: 50%; object-fit: cover; box-shadow: inset 0 0 0 1px #f05668; }
-.msg-col { display: grid; gap: 2px; max-width: 300px; justify-items: start; }
+.msg-col { display: grid; gap: 4px; max-width: 300px; justify-items: start; }
 .msg.out .msg-col { justify-items: end; }
 .msg-name { margin-left: 12px; font: 400 10px/12.5px var(--roboto); color: #909093; }
-.bubble-row { display: flex; align-items: flex-end; gap: 6px; }
+.bubble-row { display: flex; align-items: center; gap: 8px; }
 .bubble {
   position: relative; margin: 0; padding: 7px 12px; border-radius: 20px; max-width: 294px;
   font: 400 15px/18.75px var(--roboto); color: rgba(0, 0, 0, 0.9); background: var(--bubble-gray); white-space: pre-wrap; overflow-wrap: break-word;
@@ -85,7 +86,7 @@
 .choice:not(:disabled) { animation: pulse 1.8s ease-in-out infinite; }
 .hint-under { margin-left: 12px; font: 400 10px/14px var(--sf-text); color: var(--accent); }
 .bet-link { color: var(--accent); font: 700 15px/18.75px var(--sf-text) !important; text-decoration: underline; }
-.bet-this { width: 26px; height: 26px; margin-bottom: 4px; border-radius: 50%; background: #fff !important; box-shadow: 0 1px 4px rgba(0,0,0,0.2); display: grid; place-items: center; animation: badge-in 0.56s var(--pop) both, wiggle 2.4s ease-in-out 1s infinite; }
+.bet-this { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #fff !important; box-shadow: 0 1px 4px rgba(0,0,0,0.2); display: grid; place-items: center; animation: badge-in 0.56s var(--pop) both, wiggle 2.4s ease-in-out 1s infinite; }
 .bet-this img { width: 20px; height: 21px; }
 @keyframes wiggle { 0%, 84%, 100% { transform: rotate(0); } 88% { transform: rotate(-14deg); } 94% { transform: rotate(12deg); } }
 
@@ -112,13 +113,19 @@
   flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 10px 44px; background: #fff;
   transition: transform 0.38s var(--spring);
 }
-.kb .th-compose { transform: translateY(calc(-1 * var(--kb) + 44px)); }
+.kb .th-compose { transform: translateY(calc(-1 * var(--kb) + 34px)); }
 .kb .th-list { padding-bottom: calc(var(--kb) - 30px); }
 .th-plus { width: 36px; height: 36px; border-radius: 50%; background: #e9e9eb !important; color: #8e8e93; font: 300 28px/34px var(--sf-text); text-align: center !important; transition: transform 0.3s var(--pop); }
 .th-plus.on { transform: rotate(45deg); }
-.th-input { flex: 1; display: flex; align-items: center; height: 36px; padding: 0 4px 0 14px; border-radius: 18px; border: 1px solid #c6c6c8; }
-.th-input input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 17px/22px var(--sf-text); }
-.th-input input::placeholder { color: #c4c4c6; }
+.th-compose { align-items: flex-end; }
+.th-input { flex: 1; display: flex; align-items: flex-end; min-height: 36px; padding: 0 4px 0 14px; border-radius: 18px; border: 1px solid #c6c6c8; }
+.th-input textarea {
+  flex: 1; min-width: 0; height: 34px; padding: 6px 0; border: 0; outline: 0; resize: none; background: transparent;
+  font: 400 17px/22px var(--sf-text); overflow-y: auto; scrollbar-width: none; transition: height 0.15s ease;
+}
+.th-input textarea::placeholder { color: #c4c4c6; }
+.th-input .th-send { margin-bottom: 3px; }
+.th-input .th-mic { margin-bottom: 7px; }
 .th-send { width: 28px; height: 28px; border-radius: 50%; background: #0078ff !important; color: #fff; font: 700 18px/28px var(--sf-text); text-align: center !important; animation: badge-in 0.35s var(--pop); }
 .th-mic { color: #8e8e93; font-size: 16px; padding-right: 8px; }
 .bet-hint {

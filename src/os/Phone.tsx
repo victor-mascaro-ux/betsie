@@ -13,6 +13,8 @@ import { LockScreen } from './LockScreen';
 import { ShareSheet } from './ShareSheet';
 import { StatusBar } from './StatusBar';
 import { sample } from '../lib/samples';
+import { reportUi } from '../lib/ui';
+import { HintRing } from '../guide/HintRing';
 import '../styles/os.css';
 
 const fineMouse = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -106,11 +108,22 @@ export function Phone({ me, framed }: { me: PersonId; framed?: boolean }) {
     me, app, open, home, share: setShareBet, setStatusLight, keyboard: !!kbTarget,
   }), [me, app, open, home, kbTarget]);
 
+  // "Start over": back to the lock screen with every app closed.
+  useEffect(() => {
+    const reset = () => { setLocked(true); setUnlocking(false); setApp(null); setOpened([]); setLinks({}); setBanner(null); setShareBet(null); seen.current = Date.now(); };
+    window.addEventListener('betsie-reset', reset);
+    return () => window.removeEventListener('betsie-reset', reset);
+  }, []);
+
+  // Tell the guided tour what this phone is showing.
+  useEffect(() => { reportUi(me, { locked, app, api }); }, [me, locked, app, api]);
+
   const light = locked || app === null || statusLight;
   return (
     <PhoneContext.Provider value={api}>
       <div
         ref={rootRef}
+        data-me={me}
         className={`phone${framed ? ' framed' : ''}${kbTarget ? ' kb' : ''}`}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -128,6 +141,8 @@ export function Phone({ me, framed }: { me: PersonId; framed?: boolean }) {
         {banner && <Banner notice={banner} onOpen={() => openNotice(banner)} onDismiss={() => setBanner(null)} />}
         <Keyboard target={kbTarget} />
         <button className={`home-indicator${light ? ' light' : ''}`} aria-label="Home" onClick={() => (locked ? unlock() : home())} />
+        <HintRing me={me} />
+        <div className="finger" aria-hidden="true" />
       </div>
     </PhoneContext.Provider>
   );

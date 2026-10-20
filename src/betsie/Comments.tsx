@@ -65,7 +65,7 @@ export function Comments({ id, onClose }: { id: string; onClose: () => void }) {
           </div>
         ))}
       </div>
-      <div className="c-bottom" style={{ transform: keyboard && !stickers ? 'translateY(calc(-1 * var(--kb) + 30px))' : undefined }}>
+      <div className="c-bottom" style={{ transform: keyboard && !stickers ? 'translateY(calc(-1 * var(--kb) + 20px))' : undefined }}>
         <div className="emoji-row">
           {EMOJI.map((e) => <button key={e} className="tap" onClick={() => { setText((t) => t + e); inputRef.current?.focus(); }}>{e}</button>)}
         </div>

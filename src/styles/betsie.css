@@ -374,7 +374,8 @@
   border-radius: 10px 10px 0 0; overflow: hidden; background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,0.18);
   animation: sheet-up 0.42s var(--spring) both;
 }
-.comments.leaving { transform: translateY(100%); transition: transform 0.26s ease-in; }
+.comments.leaving { animation: sheet-down 0.28s cubic-bezier(0.4, 0, 1, 1) both; }
+@keyframes sheet-down { to { transform: translateY(100%); } }
 .c-head { position: relative; flex: none; height: 49px; background: var(--sheet); display: grid; place-items: center; touch-action: none; }
 .c-head b { font: 700 20px/30px var(--sf-text); }
 .grab { position: absolute; left: 50%; top: 4px; width: 80px; height: 14px; margin-left: -40px; }
