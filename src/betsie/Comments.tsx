@@ -30,7 +30,7 @@ export function Comments({ id, onClose }: { id: string; onClose: () => void }) {
   useEffect(() => { markCommentsRead(id, me); }, [id, me, bet.comments.length]);
   useEffect(() => { listRef.current?.scrollTo({ top: 1e6, behavior: 'smooth' }); }, [bet.comments.length]);
 
-  const close = () => { setLeaving(true); setTimeout(onClose, 260); };
+  const close = () => { setLeaving(true); setTimeout(onClose, 420); };
   const send = () => { if (!text.trim()) return; addComment(id, me, { text: text.trim() }); setText(''); };
   const sticker = (src: string) => { addComment(id, me, { sticker: src }); setStickers(false); };
   const pool = q.trim() ? [...GIPHY, ...MEMES].filter((_, i) => (i + q.length) % 2 === 0) : [...GIPHY, ...MEMES];

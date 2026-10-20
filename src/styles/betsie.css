@@ -320,6 +320,7 @@
 .cel-photo { position: relative; width: 210px; height: 210px; border-radius: 50%; overflow: hidden; box-shadow: inset 0 0 0 4px var(--accent); animation: pop-up 0.6s var(--pop) 0.2s both; }
 .cel-photo img { width: 100%; height: 100%; object-fit: cover; }
 .lost .cel-photo img { filter: grayscale(0.4); }
+.celebrate.in-chat { z-index: 9; }
 .cel-crown { position: absolute; left: 196px; top: 40px; width: 153px; transform: rotate(22deg); animation: drop-crown 0.8s var(--pop) 0.6s both; }
 @keyframes drop-crown { from { transform: translateY(-260px) rotate(-30deg); opacity: 0; } }
 .cel-jester { position: absolute; left: 154px; top: 48px; width: 136px; animation: drop-crown 0.8s var(--pop) 0.6s both; }
@@ -376,7 +377,8 @@
   border-radius: 10px 10px 0 0; overflow: hidden; background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,0.18);
   animation: sheet-up 0.42s var(--spring) both;
 }
-.comments.leaving { animation: sheet-down 0.28s cubic-bezier(0.4, 0, 1, 1) both; }
+/* same 420 ms as the open, mirrored: gentle start, quick finish */
+.comments.leaving { animation: sheet-down 0.42s cubic-bezier(0.55, 0, 0.75, 0.6) both; }
 @keyframes sheet-down { to { transform: translateY(100%); } }
 .c-head { position: relative; flex: none; height: 49px; background: var(--sheet); display: grid; place-items: center; touch-action: none; }
 .c-head b { font: 700 20px/30px var(--sf-text); }

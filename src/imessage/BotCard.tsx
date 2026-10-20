@@ -96,7 +96,7 @@ export function BotCard({ m, onOpenBet }: { m: Message; onOpenBet: (id: string) 
           <Bubble><b>{U(card.who || b.by)}, WHO WON THE BET?</b></Bubble>
           <div className="bubble rich buttons">
             {[b.by, b.vs].map((p) => (
-              <Choice key={p} label={U(p)} tone={p === b.winner || b.votes[me] === p ? 'red' : 'gray'} picked={b.votes[me] === p || b.winner === p} faded={!!b.winner && b.winner !== p} disabled={!canVote} onClick={() => answerCard(m.id, me, p)} />
+              <Choice key={p} label={U(p)} tone={canVote || p === b.winner || b.votes[me] === p ? 'red' : 'gray'} picked={b.votes[me] === p || b.winner === p} faded={!!b.winner && b.winner !== p} disabled={!canVote} onClick={() => answerCard(m.id, me, p)} />
             ))}
           </div>
         </>

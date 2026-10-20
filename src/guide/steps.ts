@@ -23,7 +23,8 @@ export interface Ctx {
 export interface Hint { me: PersonId; sel: string; text?: string; last?: boolean }
 
 export interface Step {
-  phone: PersonId | null;
+  /** The phone the task is on; a function when it moves (first Sylvia votes, then Maxine). */
+  phone: PersonId | null | ((c: Ctx) => PersonId | null);
   title: string;
   body: (c: Ctx) => string;
   done: (c: Ctx) => boolean;
@@ -176,14 +177,22 @@ export const STEPS: Step[] = [
     run: async (c) => { if (c.bet) endBetNow(c.bet.id); await sleep(400); },
   },
   {
-    phone: S,
+    phone: (c) => (c.bet?.votes[S] ? M : S),
     title: 'Who won? Both vote',
-    body: () => 'She sang it! Sylvia votes for Sylvia, then Maxine admits it. When one of you concedes, the bet is settled.',
+    body: (c) => c.bet?.votes[S]
+      ? 'Sylvia voted for Sylvia. Now on Maxine’s phone, open the update and tap SYLVIA to admit it. When one of you concedes, the bet is settled.'
+      : 'She sang it! On Sylvia’s phone, tap SYLVIA. Then Maxine gets to admit it.',
     done: (c) => c.bet?.status === 'settled',
-    hints: () => [
+    hints: (c) => [
       { me: S, sel: '.candidate .pill', text: 'SYLVIA' },
       { me: M, sel: '.choice:not(:disabled)', text: 'SYLVIA', last: true },
       { me: M, sel: '.candidate .pill', text: 'SYLVIA' },
+      { me: M, sel: '.banner .notice' },
+      { me: M, sel: '.lock .notice' },
+      ...(c.bet?.origin === 'imessage'
+        ? [{ me: M, sel: `.tl-row[data-thread="${GROUP}"]` }, { me: M, sel: '.app-icon-btn[aria-label="Messages"]' }]
+        : [{ me: M, sel: '.app-icon-btn[aria-label="Betsie"]' }]),
+      { me: M, sel: '.home-indicator' },
     ],
     run: async (c) => {
       const b = c.bet;
@@ -219,7 +228,8 @@ export const STEPS: Step[] = [
       await show(S);
       if (!find(S, '.share, .story')) {
         if (!find(S, '.app-layer.front .result')) await atBet(S, c.bet.id);
-        if (find(S, '.celebrate')) { await sleep(900); await tap(S, '.celebrate'); await sleep(300); }
+        // Let the celebration play before moving on.
+        if (find(S, '.celebrate')) { await sleep(3200); await tap(S, '.celebrate'); await sleep(400); }
         await tap(S, '.app-layer.front .tb-center');
       }
       if (find(S, '.share')) await tap(S, '.share-apps button', { text: 'Stories' });

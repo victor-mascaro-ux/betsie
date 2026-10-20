@@ -137,6 +137,7 @@ img { display: block; }
 .device .bezel { transition: box-shadow 0.4s ease; }
 .device.focus .bezel { box-shadow: 0 0 0 2px #2e2e30, 0 0 0 4px #9a9a9f, 0 0 0 5px #48484a, 0 0 0 11px rgba(240, 86, 104, 0.55), 0 30px 80px rgba(0, 0, 0, 0.55); }
 .phones.one .device.off { display: none; }
+.phones.one .device figcaption { height: 56px; align-items: flex-start; }
 .who-switch { display: inline-flex; padding: 3px; border-radius: 18px; background: #2f2f2f; }
 .who-switch button { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px 0 4px; border: 0; border-radius: 15px; background: transparent; color: #bdbdbd; font-weight: 600; cursor: pointer; }
 .who-switch button img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
@@ -145,7 +146,7 @@ img { display: block; }
 /* ---------- phone-sized screens: the task under the phone ---------- */
 .mobile { display: flex; flex-direction: column; align-items: center; }
 .guide-bar {
-  width: 100%; max-width: 480px; flex: 1; min-height: 150px; padding: 10px 14px 14px; background: #1e1e1e; color: #fff;
+  width: 100%; max-width: 480px; flex: 1; min-height: 158px; padding: 10px 14px 14px; background: #1e1e1e; color: #fff;
   display: grid; grid-template-rows: auto 1fr auto; gap: 4px; animation: card-in 0.45s var(--pop) both;
 }
 .guide-bar.done { box-shadow: inset 0 2px 0 #34c759; }
@@ -154,11 +155,12 @@ img { display: block; }
 .gb-top b { font-size: 15px; }
 .guide-bar p { margin: 0; color: #cfcfcf; font-size: 12.5px; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .guide-bar .g-go { height: 40px; font-size: 21px; margin-top: 2px; }
-/* switch + tools sit in the guide bar's top-right corner, clear of the phone */
-.mobile .switch, .mobile .menu-btn { top: auto; bottom: 108px; width: 32px; height: 32px; border-width: 1.5px; }
+/* switch + tools sit in the guide bar's top-right corner, clear of the phone and the text */
+.mobile-foot { position: relative; flex: 1; width: 100%; max-width: 480px; display: flex; }
+.mobile .switch, .mobile .menu-btn { position: absolute; top: 10px; width: 30px; height: 30px; border-width: 1.5px; }
 .mobile .switch { right: 12px; }
-.mobile .menu-btn { right: 52px; }
-.mobile .menu-btn img { width: 20px; height: 21px; }
-.guide-bar .gb-top { padding-right: 84px; }
+.mobile .menu-btn { right: 50px; }
+.mobile .menu-btn img { width: 19px; height: 20px; }
+.guide-bar .gb-top { min-height: 30px; padding-right: 84px; }
 .demo .tip { margin: 10px 0 0; padding: 8px 10px; border-radius: 8px; background: #2f2f2f; color: #cfcfcf; font-size: 12px; }
 .demo .reset + .reset { margin-top: 8px; }

@@ -40,7 +40,7 @@ function Devices({ one, focus }: { one: boolean; focus: PersonId }) {
     const fit = () => {
       const el = ref.current?.parentElement;
       if (!el) return;
-      const w = (one ? 1 : 2) * (PHONE_W + 2 * BEZEL) + (one ? 0 : 64), h = PHONE_H + 2 * BEZEL + 52;
+      const w = (one ? 1 : 2) * (PHONE_W + 2 * BEZEL) + (one ? 0 : 64), h = PHONE_H + 2 * BEZEL + (one ? 64 : 52);
       setK(Math.min(1, (el.clientWidth - 48) / w, (el.clientHeight - 32) / h));
     };
     fit();
@@ -78,7 +78,7 @@ function MobileShell() {
   const tour = useTour();
   const [tools, setTools] = useState(false);
   const [k, setK] = useState(1);
-  const BAR = 150;
+  const BAR = 158;
   useLayoutEffect(() => {
     const fit = () => setK(Math.min(window.innerWidth / PHONE_W, (window.innerHeight - BAR) / PHONE_H));
     fit();
@@ -93,11 +93,13 @@ function MobileShell() {
           <div style={{ width: PHONE_W, height: PHONE_H, transform: `scale(${k})`, transformOrigin: '0 0' }}><Phone me={p} /></div>
         </div>
       ))}
-      <GuideBar />
-      <button className="switch tap" onClick={() => setTour({ focus: other })} aria-label={`Switch to ${firstName(other)}'s phone`}>
-        <img src={person(other).photo} alt="" />
-      </button>
-      <button className="menu-btn tap" onClick={() => setTools(true)} aria-label="Demo tools"><img src={clover} alt="" /></button>
+      <div className="mobile-foot">
+        <GuideBar />
+        <button className="switch tap" onClick={() => setTour({ focus: other })} aria-label={`Switch to ${firstName(other)}'s phone`}>
+          <img src={person(other).photo} alt="" />
+        </button>
+        <button className="menu-btn tap" onClick={() => setTools(true)} aria-label="Demo tools"><img src={clover} alt="" /></button>
+      </div>
       {tools && (
         <div className="sheet-backdrop" onClick={() => setTools(false)}>
           <div className="panel-sheet" onClick={(e) => e.stopPropagation()}>

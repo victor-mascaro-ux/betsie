@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import clover from '../assets/brand/clover.webp';
 import { firstName, person } from '../data/people';
-import { endBetNow, resetDemo, useAppState } from '../data/store';
+import { createBet, endBetNow, resetDemo, useAppState } from '../data/store';
 import { on, useUi } from '../lib/ui';
 import { remaining, useNow } from '../lib/time';
 import { hideFingers } from './pilot';
@@ -25,13 +25,15 @@ export function useGuide() {
   const [done, setDone] = useState(false);
 
   useEffect(() => on('story-posted', () => setTour({ storyPosted: true })), []);
-  useEffect(() => { if (step.phone && !tour.running) setTour({ focus: step.phone }); }, [tour.step]); // eslint-disable-line react-hooks/exhaustive-deps
+  const phone = typeof step.phone === 'function' ? step.phone(ctx) : step.phone;
+  // The visible phone follows the task (one-phone view and phones switch to it).
+  useEffect(() => { if (phone && !tour.running) setTour({ focus: phone }); }, [tour.step, phone]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Move on once the task is done (by "Show me" or by hand).
   useEffect(() => {
     if (tour.running || !step.done(ctx)) { setDone(false); return; }
     setDone(true);
-    const t = setTimeout(() => { setDone(false); setTour({ step: tour.step + 1 }); }, 900);
+    const t = setTimeout(() => { setDone(false); setTour({ step: tour.step + 1 }); }, 1400);
     return () => clearTimeout(t);
   }, [s, ui, tour]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -41,8 +43,24 @@ export function useGuide() {
     try { await step.run(ctx); } catch (e) { console.warn('tour step stopped:', e); }
     finally { hideFingers(); setTour({ running: false }); }
   };
-  return { tour, step, ctx, done, showMe, last: tour.step >= STEPS.length - 1 };
+  // Sylvia said no (or let the clock run out): the tour can't go on with this bet,
+  // so offer to send the same challenge again.
+  const last = tour.step >= STEPS.length - 1;
+  const failed = !last && tour.step >= 3 && !!ctx.bet && (ctx.bet.status === 'declined' || ctx.bet.status === 'expired') ? ctx.bet : undefined;
+  const retry = () => {
+    if (!failed) return;
+    const { by, vs, text, endsAt, method, visibility, origin } = failed;
+    createBet({ by, vs, text, endsAt: Math.max(endsAt, Date.now() + 24 * 3600_000), method, visibility, origin });
+    setTour({ focus: vs });
+  };
+  return { tour, step, ctx, done, showMe, phone, last, failed, retry };
 }
+
+/** What to say when the tour's bet didn't happen. */
+const failedCopy = (b: NonNullable<ReturnType<typeof useGuide>['failed']>) => ({
+  title: b.status === 'declined' ? `${firstName(b.vs)} passed 🤷` : 'Time ran out ⏰',
+  body: `${b.status === 'declined' ? `${firstName(b.vs)} tapped NO, so there’s no bet.` : `${firstName(b.vs)} didn’t answer in time, so there’s no bet.`} A bet takes two: send the same challenge again, and this time ${firstName(b.vs)} says YES.`,
+});
 
 const WhoChip = ({ phone }: { phone: Ctx['tour']['focus'] | null }) =>
   phone
@@ -50,7 +68,7 @@ const WhoChip = ({ phone }: { phone: Ctx['tour']['focus'] | null }) =>
     : <span className="g-who both">On both phones</span>;
 
 export function GuidePanel() {
-  const { tour, step, ctx, done, showMe, last } = useGuide();
+  const { tour, step, ctx, done, showMe, phone, last, failed, retry } = useGuide();
   const s = useAppState();
   const now = useNow(1000);
   const [confirm, setConfirm] = useState(false);
@@ -68,8 +86,17 @@ export function GuidePanel() {
       </div>
       <small className="g-count">{last ? 'Tour complete' : `Task ${tour.step + 1} of ${STEPS.length - 1}`}</small>
 
+      {failed ? (
+        <section className="g-card" key={`retry-${failed.id}`}>
+          <WhoChip phone={failed.by} />
+          <h2>{failedCopy(failed).title}</h2>
+          <p>{failedCopy(failed).body}</p>
+          <button className="g-go tap" onClick={retry}>Send it again</button>
+          <small className="g-or">or start a new bet on {firstName(failed.by)}’s phone.</small>
+        </section>
+      ) : (
       <section className={`g-card${done ? ' done' : ''}`} key={tour.step}>
-        {!last && <WhoChip phone={step.phone} />}
+        {!last && <WhoChip phone={phone} key={phone || 'both'} />}
         <h2>{step.title}</h2>
         <p>{step.body(ctx)}</p>
         {last ? (
@@ -82,10 +109,11 @@ export function GuidePanel() {
             <button className={`g-go tap${tour.running ? ' busy' : ''}${done ? ' ok' : ''}`} onClick={showMe} disabled={tour.running || done}>
               {done ? 'Done ✓' : tour.running ? <><i className="spin" />Doing it…</> : step.cta || 'Show me'}
             </button>
-            <small className="g-or">{step.phone ? <>or do it yourself on {firstName(step.phone)}’s phone: tap the pulsing ring.</> : 'or use the demo tools below.'}</small>
+            <small className="g-or">{phone ? <>or do it yourself on {firstName(phone)}’s phone: tap the pulsing ring.</> : 'or use the demo tools below.'}</small>
           </>
         )}
       </section>
+      )}
 
       <div className="g-tools">
         <h3>View</h3>
@@ -117,7 +145,17 @@ export function GuidePanel() {
 
 /** Phone-sized screens: the current task as a bar under the phone. */
 export function GuideBar() {
-  const { tour, step, ctx, done, showMe, last } = useGuide();
+  const { tour, step, ctx, done, showMe, last, failed, retry } = useGuide();
+  if (failed) {
+    const copy = failedCopy(failed);
+    return (
+      <div className="guide-bar" key={`retry-${failed.id}`}>
+        <div className="gb-top"><span className="gb-count">{tour.step + 1}/{STEPS.length - 1}</span><b>{copy.title}</b></div>
+        <p>{copy.body}</p>
+        <button className="g-go tap" onClick={retry}>Send it again</button>
+      </div>
+    );
+  }
   return (
     <div className={`guide-bar${done ? ' done' : ''}`} key={tour.step}>
       <div className="gb-top">

@@ -15,6 +15,7 @@ import { ago, chatStamp, useNow } from '../lib/time';
 import { usePhone, type Link } from '../os/context';
 import { reportUi } from '../lib/ui';
 import { BotCard } from './BotCard';
+import { Celebration, celebrated } from '../betsie/Celebration';
 import '../styles/imessage.css';
 
 const BET_RE = /\bI bet\b\s*(?:that\s+)?(.+)/i;
@@ -126,6 +127,11 @@ function Thread({ thread, active, dir, onBack, onOpenThread }: { thread: string;
   const [text, setText] = useState('');
   const [drawer, setDrawer] = useState(false);
   const [compose, setCompose] = useState<Partial<Draft> | null>(null);
+  // A bet settled from this thread plays the full celebration here too.
+  const [partyDone, setPartyDone] = useState<string[]>([]);
+  const party = group
+    ? s.bets.find((b) => b.status === 'settled' && b.origin === 'imessage' && betsieThread(b.by, b.vs) === thread && (b.by === me || b.vs === me) && !partyDone.includes(b.id) && !celebrated(me, b.id, 'imessage'))
+    : undefined;
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -220,6 +226,7 @@ function Thread({ thread, active, dir, onBack, onOpenThread }: { thread: string;
           <p>Challenge {firstName(them[0])} without leaving the chat.</p>
         </div>
       )}
+      {party && active && <Celebration bet={party} won={party.winner === me} surface="imessage" onDone={() => setPartyDone((l) => [...l, party.id])} />}
       {compose && (
         <div className="imsg-app">
           <div className="imsg-app-bar"><img src={clover} alt="" /><b>Betsie</b><button className="tap" onClick={() => setCompose(null)}>Cancel</button></div>
