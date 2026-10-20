@@ -1,0 +1,30 @@
+/* Betsie design tokens, taken from the Figma file. */
+:root {
+  --sf-text: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter SF", system-ui, sans-serif;
+  --sf: "SF Pro", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter SF", system-ui, sans-serif;
+  --display: "Passion One", var(--sf);
+  --roboto: Roboto, var(--sf);
+
+  --red: #f05668;         /* bars, buttons */
+  --accent: #f05366;      /* red text, photo rings */
+  --red-80: rgba(240, 86, 104, 0.8);
+  --red-60: rgba(240, 86, 104, 0.6);
+  --red-soft: #f8a9b2;    /* disabled / pressed-state buttons */
+  --ink: #000;
+  --gray: #9fa6b5;        /* inactive tab, decline */
+  --muted: #b4afaf;       /* placeholders, sub-labels */
+  --sub: #7d7f85;
+  --line: #efeff0;        /* card strokes, dividers, fields */
+  --sheet: #d9d9d9;       /* comment sheet chrome */
+  --clock: #ffdb00;       /* countdown tiles */
+  --shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
+  --shadow-down: 0 4px 4px rgba(0, 0, 0, 0.25);
+
+  --ios-blue: #0a84ff;
+  --bubble-blue: #0b84fe;
+  --bubble-gray: #e9e9eb;
+
+  --spring: linear(0, 0.0558, 0.1797, 0.3299, 0.4827, 0.6183, 0.7323, 0.8243, 0.8925, 0.9417, 0.9756, 0.9968, 1.0091, 1.0152, 1.0172, 1.0166, 1.0146, 1.012, 1.0094, 1.007, 1.0049, 1.0033, 1.002, 1.0011, 1); /* 380 ms */
+  --pop: linear(0, 0.0721, 0.2389, 0.4424, 0.6417, 0.8121, 0.9421, 1.0301, 1.0805, 1.101, 1.1004, 1.0868, 1.0669, 1.0455, 1.0265, 1.0112, 1.0003, 0.9935, 0.9902, 0.9894, 0.9903, 0.9922, 0.9944, 0.9964, 0.9982, 0.9995, 1.0004, 1.0009, 1); /* 560 ms */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+}

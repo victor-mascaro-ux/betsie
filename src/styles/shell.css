@@ -1,0 +1,83 @@
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; }
+body {
+  background: #1e1e1e;
+  color: #fff;
+  font: 13px/1.45 var(--sf-text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+button { font: inherit; color: inherit; }
+img { display: block; }
+
+/* Press feedback, used everywhere (both phones, both apps). */
+.tap { transition: transform 0.25s var(--pop), opacity 0.2s ease; -webkit-tap-highlight-color: transparent; cursor: pointer; }
+.tap:active { transform: scale(0.95); opacity: 0.82; transition-duration: 0.08s; }
+
+/* ---------- desktop: panel + two phones ---------- */
+.shell { display: flex; height: 100%; }
+.panel {
+  width: 300px; flex: none; overflow: auto;
+  background: #262626; border-right: 1px solid #333;
+}
+.stage { flex: 1; position: relative; display: grid; place-items: center; overflow: hidden; }
+.phones { position: absolute; left: 50%; top: 50%; display: flex; gap: 64px; align-items: flex-start; transform-origin: center; }
+
+.device { margin: 0; }
+.device figcaption {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; color: #cfcfcf; font-size: 15px; font-weight: 500;
+}
+.device figcaption img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+.bezel {
+  position: relative; padding: 16px; border-radius: 71px; background: #050505;
+  box-shadow: 0 0 0 2px #2e2e30, 0 0 0 4px #9a9a9f, 0 0 0 5px #48484a, 0 30px 80px rgba(0, 0, 0, 0.55);
+}
+.bezel-screen { position: relative; width: 430px; height: 932px; border-radius: 55px; overflow: hidden; isolation: isolate; }
+.bezel .btn { position: absolute; width: 5px; border-radius: 2px; background: linear-gradient(90deg, #6e6e73, #b5b5ba 45%, #6e6e73); }
+.btn.action { left: -9px; top: 150px; height: 32px; }
+.btn.vol-up { left: -9px; top: 215px; height: 62px; }
+.btn.vol-down { left: -9px; top: 292px; height: 62px; }
+.btn.power { right: -9px; top: 245px; height: 100px; }
+
+/* ---------- demo panel ---------- */
+.demo { padding: 22px 20px; display: flex; flex-direction: column; min-height: 100%; }
+.demo header { display: flex; gap: 12px; align-items: center; }
+.demo header img { width: 40px; height: 41px; }
+.demo h1 { margin: 0; font: 34px/1 var(--display); color: #f05668; }
+.demo header p { margin: 2px 0 0; color: #aaa; font-size: 12px; }
+.demo .lede { color: #d4d4d4; margin: 16px 0 6px; }
+.demo h2 { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #8d8d8d; margin: 18px 0 8px; font-weight: 600; }
+.demo .steps { margin: 0; padding-left: 18px; color: #cfcfcf; display: grid; gap: 6px; }
+.demo .steps b { color: #fff; }
+.demo .tip { margin: 10px 0 0; padding: 8px 10px; border-radius: 8px; background: #2f2f2f; color: #cfcfcf; font-size: 12px; }
+.demo .empty { color: #8d8d8d; margin: 0; }
+.demo .bets { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.demo .bets li { display: flex; align-items: flex-start; gap: 10px; background: #2f2f2f; border-radius: 10px; padding: 10px; }
+.demo .who { display: flex; flex: none; padding-top: 2px; }
+.demo .who img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid #2f2f2f; }
+.demo .who img + img { margin-left: -8px; }
+.demo .what { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.demo .what b { font-weight: 500; font-size: 12px; line-height: 1.35; }
+.demo .what small { color: #9a9a9a; font-size: 11px; }
+.demo .bets button { flex: none; border: 0; border-radius: 14px; background: #f05668; padding: 5px 10px; font-size: 12px; font-weight: 600; }
+.demo .foot { margin-top: auto; padding-top: 24px; }
+.demo .reset { width: 100%; border: 1px solid #444; background: transparent; border-radius: 18px; padding: 8px 12px; font-weight: 600; }
+.demo .reset.armed { background: #f05668; border-color: #f05668; }
+.demo .foot p { color: #777; font-size: 11px; text-align: center; margin: 8px 0 0; }
+
+/* ---------- phone-sized viewport: one phone, edge to edge ---------- */
+.mobile { position: fixed; inset: 0; background: #000; display: grid; place-items: start center; }
+.fit { overflow: hidden; }
+.switch, .menu-btn {
+  position: fixed; z-index: 50; width: 40px; height: 40px; border-radius: 50%; padding: 0; border: 2px solid #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); overflow: hidden; background: #fff;
+}
+.switch { right: 12px; top: calc(50% - 20px); }
+.menu-btn { right: 12px; top: calc(50% + 30px); display: grid; place-items: center; }
+.menu-btn img { width: 26px; height: 27px; }
+.switch img { width: 100%; height: 100%; object-fit: cover; }
+.sheet-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; animation: fade 0.2s ease; }
+.panel-sheet { width: 100%; max-height: 80%; overflow: auto; background: #262626; border-radius: 16px 16px 0 0; animation: sheet-up 0.38s var(--spring); }
+@keyframes fade { from { opacity: 0; } }
+@keyframes sheet-up { from { transform: translateY(100%); } }

@@ -8,9 +8,12 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "scene": "node figma/build-scene.mjs"
+    "assets": "node figma/pick-assets.mjs"
   },
   "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
     "sharp": "^0.35.5",
     "typescript": "^7.0.2",
     "vite": "^8.3.4"
@@ -18,6 +21,8 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource/passion-one": "^5.3.0",
-    "@fontsource/roboto": "^5.3.0"
+    "@fontsource/roboto": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   }
 }
