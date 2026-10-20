@@ -100,10 +100,7 @@ export function GuidePanel() {
         <h2>{step.title}</h2>
         <p>{step.body(ctx)}</p>
         {last ? (
-          <div className="g-end">
-            <button className="g-go tap" onClick={startOver}>Start over</button>
-            <button className="g-ghost tap" onClick={restartTour}>Replay the tour</button>
-          </div>
+          <button className="g-go tap" onClick={startOver}>Start over</button>
         ) : (
           <>
             <button className={`g-go tap${tour.running ? ' busy' : ''}${done ? ' ok' : ''}`} onClick={showMe} disabled={tour.running || done}>

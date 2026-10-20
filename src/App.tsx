@@ -4,7 +4,7 @@ import { firstName, person } from './data/people';
 import { tick } from './data/store';
 import type { PersonId } from './data/types';
 import { GuideBar, GuidePanel, startOver } from './guide/Guide';
-import { restartTour, setTour, useTour } from './guide/tour';
+import { setTour, useTour } from './guide/tour';
 import { Phone } from './os/Phone';
 
 const PHONE_W = 430, PHONE_H = 932, BEZEL = 16;
@@ -106,7 +106,6 @@ function MobileShell() {
             <div className="demo">
               <h2>Demo tools</h2>
               <button className="reset tap" onClick={() => { startOver(); setTools(false); }}>Start Over</button>
-              <button className="reset tap" onClick={() => { restartTour(); setTools(false); }}>Replay the tour</button>
               <p className="tip">Double-click any empty text box to fill it in.</p>
             </div>
           </div>
