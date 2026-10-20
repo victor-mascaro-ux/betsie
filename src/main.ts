@@ -5,6 +5,7 @@ import '@fontsource/roboto/700.css';
 import interNormal from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import interItalic from '@fontsource-variable/inter/files/inter-latin-wght-italic.woff2?url';
 import './style.css';
+import { FLOW_START } from './motion';
 import { Player } from './player';
 import { loadFrame, preloadAssets, renderFrame, type SceneIndex } from './scene';
 
@@ -82,7 +83,7 @@ const boot = async () => {
     renderFlows();
     fit();
     document.body.classList.remove('menu');
-    player.start(id);
+    player.start(FLOW_START[id] || id);
   };
 
   $('#restart').onclick = () => startFlow(flow);

@@ -1,6 +1,6 @@
 // Plays the prototype: navigation, triggers (click, after delay, drag),
 // transitions, history and prefetching.
-import { easingOf } from './easing';
+import { ambient, delayFor, intro, isSplash, motionFor, press } from './motion';
 import { loadFrame, preloadAssets, renderFrame, type Reaction, type Rendered, type SFrame, type Transition } from './scene';
 import { dissolve, smartAnimate, type Running } from './transitions';
 
@@ -32,20 +32,20 @@ export class Player {
 
   async start(id: string) {
     this.history = [];
-    await this.show(id, null);
+    await this.show(id, null, false);
   }
 
   async navigate(id: string, tr: Transition | null | undefined) {
     if (this.cur) this.history.push(this.cur.frame.id);
-    await this.show(id, tr || null);
+    await this.show(id, tr || null, true);
   }
 
   async back() {
     const prev = this.history.pop();
-    if (prev) await this.show(prev, { k: 'DISSOLVE', ms: 200, e: 'EASE_OUT' });
+    if (prev) await this.show(prev, { k: 'DISSOLVE', ms: 200, e: 'EASE_OUT' }, true);
   }
 
-  private async show(id: string, tr: Transition | null) {
+  private async show(id: string, tr: Transition | null, animated: boolean) {
     const my = ++this.token;
     this.clearTimers();
     this.running?.finish();
@@ -59,13 +59,17 @@ export class Player {
     this.cur = B;
     this.onFrame(id);
 
-    if (!A || !tr || !tr.ms || tr.k === 'INSTANT') {
+    if (!A || !animated) {
       this.stage.replaceChildren(B.root);
+      intro(B);
+      ambient(B);
     } else {
-      const ease = easingOf(tr);
-      this.running = tr.k === 'SMART_ANIMATE'
-        ? smartAnimate(this.stage, A, B, tr.ms, ease)
-        : dissolve(this.stage, A, B, tr.ms, ease);
+      const m = motionFor(tr);
+      this.running = m.kind === 'smart'
+        ? smartAnimate(this.stage, A, B, m.ms, m.easing)
+        : dissolve(this.stage, A, B, m.ms, m.easing);
+      intro(B);
+      ambient(B);
       await this.running.done;
       if (my !== this.token) return;
       this.running = null;
@@ -82,7 +86,7 @@ export class Player {
     const visit = (nodes: SFrame['ch']) => nodes.forEach((n) => { if (n.h) return; take(n.re); if (n.ch) visit(n.ch); });
     take(frame.re);
     visit(frame.ch);
-    for (const r of timeouts) this.timers.push(window.setTimeout(() => this.act(r), r.ms || 0));
+    for (const r of timeouts) this.timers.push(window.setTimeout(() => this.act(r), delayFor(r, frame)));
   }
 
   private clearTimers() {
@@ -101,26 +105,38 @@ export class Player {
     this.navigate(r.d, r.tr);
   }
 
-  // Deepest layer with a reaction for this trigger wins, as in Figma.
-  private find(target: EventTarget | null, tg: Reaction['tg']) {
-    let el = target as Element | null;
-    while (el && this.cur && el !== this.stage) {
+  // As in Figma, the topmost hotspot under the pointer wins; layers without
+  // interactions (labels, placeholders, icons) never block the hotspot below.
+  private find(e: MouseEvent, tg: Reaction['tg']) {
+    if (!this.cur) return null;
+    for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
+      if (!this.stage.contains(el)) continue;
       const r = this.cur.reactions.get(el)?.find((x) => x.tg === tg);
       if (r) return { el, r };
-      el = el.parentElement;
     }
     return null;
   }
 
   private click(e: MouseEvent) {
     if (this.suppressClick) { this.suppressClick = false; return; }
-    const hit = this.find(e.target, 'click');
-    if (hit) this.act(hit.r);
+    const hit = this.find(e, 'click');
+    if (hit) { this.act(hit.r); return; }
+    // Sheet grabbers dismiss on a drag, as designed; a tap works too, for mouse users.
+    const grab = this.find(e, 'drag');
+    if (grab) { this.act(grab.r); return; }
+    // Splash screens skip ahead on a tap, like a real app's launch screen.
+    const skip = this.cur && isSplash(this.cur.frame) && this.cur.frame.re?.find((r) => r.tg === 'timeout');
+    if (skip) this.act(skip);
     else this.flashHotspots();
   }
 
   private pointerDown(e: PointerEvent) {
-    const drag = this.find(e.target, 'drag');
+    const tap = this.find(e, 'click');
+    if (tap && this.cur && tap.el !== this.cur.root) {
+      const n = this.cur.nodes.get(tap.el);
+      if (n) press(tap.el as HTMLElement, n, this.cur.frame);
+    }
+    const drag = this.find(e, 'drag');
     const scroller = (e.target as Element).closest('.sc-x, .sc-y, .sc-xy') as HTMLElement | null;
     if (!drag && !(scroller && e.pointerType === 'mouse')) return;
     const x0 = e.clientX, y0 = e.clientY;

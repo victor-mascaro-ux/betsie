@@ -1,4 +1,5 @@
 // Frame-to-frame transitions: Smart Animate and Dissolve, as Figma plays them.
+import { enter } from './motion';
 import type { Entry, Rendered, SNode } from './scene';
 
 export interface Running {
@@ -74,14 +75,21 @@ export const smartAnimate = (stage: HTMLElement, A: Rendered, B: Rendered, ms: n
     if (paintA) { B.root.prepend(paintA); moved.push(paintA); animate(paintA, { opacity: 1 }, { opacity: 0 }); }
   }
 
-  // Matched layers interpolate; layers that only exist in B fade in.
+  // Matched layers interpolate; layers that only exist in B arrive: small ones
+  // (bubbles, banners, buttons) pop in, large ones fade.
+  const small = (n: SNode) => (n.g[2] * n.g[3]) / (B.frame.w * B.frame.h) < 0.4;
+  const arrive = (el: HTMLElement, n: SNode) => {
+    if (small(n)) anims.push(enter(el, n));
+    else animate(el, { opacity: 0 }, { opacity: op(n) });
+  };
   for (const [key, b] of B.map) {
     if (!key || !b.el) continue;
     const a = A.map.get(key);
     if (!a) {
-      if (b.parentKey === '' || (b.parentKey !== null && visibleIn(A, b.parentKey))) animate(b.el, { opacity: 0 }, { opacity: op(b.node) });
+      if (b.parentKey === '' || (b.parentKey !== null && visibleIn(A, b.parentKey))) arrive(b.el, b.node);
       continue;
     }
+    if (!a.el && small(b.node)) { arrive(b.el, b.node); continue; }
     const from: KF = { ...geomKF(a.node), opacity: a.el ? op(a.node) : 0 };
     const to: KF = { ...geomKF(b.node), opacity: op(b.node) };
     const leaf = !a.node.ch?.length && !b.node.ch?.length;

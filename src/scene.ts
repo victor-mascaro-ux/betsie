@@ -72,6 +72,7 @@ export interface Rendered {
   root: HTMLElement;
   map: Map<string, Entry>;
   reactions: WeakMap<Element, Reaction[]>;
+  nodes: WeakMap<Element, SNode>;
 }
 
 const fileOf = (id: string) => `scene/frames/${id.replace(':', '-')}.json`;
@@ -198,6 +199,7 @@ export const renderNode = (n: SNode, r: Omit<Rendered, 'root'>, parentKey: strin
     if (n.re.some((x) => x.tg === 'click' || x.tg === 'drag')) el.classList.add('hs');
   }
   r.map.set(n.key!, { node: n, el, box, parentKey });
+  r.nodes.set(el, n);
   return el;
 };
 
@@ -212,7 +214,7 @@ export const renderFrame = (frame: SFrame): Rendered => {
     paint.style.cssText = frame.s;
     root.append(paint);
   }
-  const r: Rendered = { frame, root, map: new Map(), reactions: new WeakMap() };
+  const r: Rendered = { frame, root, map: new Map(), reactions: new WeakMap(), nodes: new WeakMap() };
   r.map.set('', { node: { g: [0, 0, frame.w, frame.h], ch: frame.ch, key: '' }, el: root, box: root, parentKey: null });
   for (const c of frame.ch) { const el = renderNode(c, r, ''); if (el) root.append(el); }
   if (frame.re) r.reactions.set(root, frame.re);
