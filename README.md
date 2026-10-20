@@ -33,7 +33,7 @@ one phone and can switch between them.
 - **Betsie app**: start a bet (friend picker, bet text, end date and time, who can see it),
   pick a decision method, review and send. The other person accepts or declines before the clock
   runs out. Set the stakes, trash-talk in the comments (emoji, likes, GIPHY stickers), vote on who
-  won, then celebrate (or wear the jester hat), share to Messages or your Instagram story, and keep
+  won, then celebrate (or wear the jester hat, in the rain, in tears), share to Messages or your Instagram story, and keep
   score in your Book of Bets.
 - **Messages**: text each other. Write “I bet …” and a clover appears: tap it and Betsie opens
   inside iMessage with the bet filled in. Betsie then runs the bet in a “Betsie: Maxine vs. Sylvia”

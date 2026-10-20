@@ -272,11 +272,13 @@
 .vs-line em { color: var(--accent); font-style: normal; }
 
 .pills { display: flex; gap: 10px; }
-.pills > div { display: grid; justify-items: center; gap: 0; }
-.pills span { width: 70px; height: 30px; border-radius: 5px; color: #fff; font: 400 20px/30px var(--display); text-align: center; box-shadow: var(--shadow-down); }
+.pills > div { display: grid; justify-items: center; gap: 6px; }
+/* Passion One's digits sit high in their line box; the top padding puts them in the optical middle */
+.pills span { box-sizing: border-box; width: 70px; height: 30px; padding-top: 1.5px; border-radius: 5px; color: #fff; font: 400 20px/28.5px var(--display); text-align: center; box-shadow: var(--shadow-down); }
 .pills small { font: 700 12px/18px var(--sf-text); }
 .pills.small { justify-content: center; padding: 6px 0 14px; }
-.pills.small span { width: 48px; height: 22px; font-size: 15px; line-height: 22px; }
+.pills.small > div { gap: 4px; }
+.pills.small span { width: 48px; height: 22px; padding-top: 1px; font-size: 15px; line-height: 21px; }
 .pills.small small { font-size: 9px; line-height: 14px; }
 
 /* ---------- voting ---------- */
@@ -307,7 +309,7 @@
 
 .celebrate {
   position: absolute; inset: 0; z-index: 25; background: #fff; display: flex; flex-direction: column; align-items: center; padding-top: 74px; cursor: pointer;
-  animation: fade-in 0.25s ease;
+  overflow: hidden; animation: fade-in 0.25s ease;
 }
 .cel-brand { display: grid; justify-items: center; animation: rise 0.5s var(--pop) both; }
 .cel-brand img { width: 215px; }
@@ -324,6 +326,29 @@
 .cel-crown { position: absolute; left: 196px; top: 40px; width: 153px; transform: rotate(22deg); animation: drop-crown 0.8s var(--pop) 0.6s both; }
 @keyframes drop-crown { from { transform: translateY(-260px) rotate(-30deg); opacity: 0; } }
 .cel-jester { position: absolute; left: 154px; top: 48px; width: 136px; animation: drop-crown 0.8s var(--pop) 0.6s both; }
+/* the loser: it rains (behind the wordmark and bar, onto the puddle) and the tears roll */
+.lost .cel-brand, .lost .cel-bar { position: relative; z-index: 2; }
+.cel-rain { position: absolute; left: 0; top: -222px; width: 430px; height: 605px; z-index: 1; pointer-events: none; animation: fade-in 0.8s ease 0.9s both; }
+.cel-rain i { position: absolute; top: 0; width: 3px; animation: rain-fall 1s linear infinite; }
+.cel-rain i::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 24px; border-radius: 3px; background: linear-gradient(rgba(84, 146, 210, 0), rgba(84, 146, 210, 0.95)); animation: inherit; animation-name: rain-drop; }
+.cel-rain i::after { content: ''; position: absolute; left: -8px; bottom: -3px; width: 18px; height: 6px; border-radius: 50%; border: 2px solid rgba(120, 180, 235, 0.95); animation: inherit; animation-name: rain-splash; }
+@keyframes rain-fall { to { opacity: 1; } }
+@keyframes rain-drop { 0% { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 82% { transform: translateY(var(--fall)); opacity: 1; } 83%, 100% { transform: translateY(var(--fall)); opacity: 0; } }
+@keyframes rain-splash { 0%, 81% { transform: scale(0.2); opacity: 0; } 84% { opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+.cel-tears { position: absolute; inset: 0; pointer-events: none; }
+.cel-eye { position: absolute; width: 0; height: 0; }
+.cel-eye .track { position: absolute; left: -2px; top: 2px; width: 4px; height: 64px; border-radius: 2px; background: linear-gradient(rgba(140, 200, 250, 0.7), rgba(140, 200, 250, 0)); animation: fade-in 1s ease 1.6s both; }
+.cel-eye i { position: absolute; left: -6px; top: -2px; width: 12px; height: 12px; opacity: 0; animation: tear 1.7s cubic-bezier(0.45, 0, 0.8, 0.55) infinite; }
+.cel-eye i::before { content: ''; position: absolute; inset: 0; border-radius: 0 50% 50% 50%; transform: rotate(45deg); background: radial-gradient(circle at 40% 40%, #fff 0 14%, #9bd6ff 30%, #3f9be4 100%); box-shadow: 0 1px 2px rgba(0, 60, 120, 0.25); }
+@keyframes tear {
+  0% { transform: translateY(0) scale(0); opacity: 1; }
+  14% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(5px) scale(1); }
+  88% { opacity: 1; }
+  100% { transform: translateY(76px) scale(0.85); opacity: 0; }
+}
+.lost .cel-photo { animation: pop-up 0.6s var(--pop) 0.2s both, sob 1.7s ease-in-out 1.4s infinite; }
+@keyframes sob { 0%, 100% { transform: none; } 20% { transform: translateY(2px) scale(0.99); } 35% { transform: none; } 50% { transform: translateY(2px) scale(0.99); } }
 .cel-sub { margin: 0; font: 600 16px/22px var(--sf-text); animation: rise 0.5s var(--pop) 1s both; }
 .cel-tap { margin-top: 8px; color: var(--muted); font-size: 12px; animation: fade-in 0.5s ease 1.6s both; }
 
