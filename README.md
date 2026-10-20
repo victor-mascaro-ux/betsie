@@ -1,6 +1,8 @@
 # Betsie — coded prototype
 
 A hi-fi, coded recreation of the [Betsie Figma prototype](https://www.figma.com/design/8MOmXASKMPvxyHsxqQLLAq/Betsie).
+Live: **https://victor-mascaro-ux.github.io/betsie/**
+
 Both prototype flows are here, with all 197 reachable screens:
 
 - **iMessage Flow**: Maxine challenges Sylvia from iMessage, Sylvia accepts, they set stakes, and the winner is declared and shared.
@@ -58,7 +60,7 @@ Figma web editor through its Plugin API, read-only:
    ```
 3. `npm run scene` rebuilds `public/scene` (layer CSS, SVG copies, WebP images sized for 2×).
 
-`figma/raw` is git-ignored.
+`figma/raw` is git-ignored. Pushing to `main` builds and deploys to GitHub Pages (`.github/workflows/pages.yml`).
 
 ## Fidelity notes
 
