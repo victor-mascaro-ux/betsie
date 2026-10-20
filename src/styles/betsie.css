@@ -38,14 +38,16 @@
 @keyframes pop-in { from { transform: translateX(-24%); opacity: 0; } }
 @keyframes fade-in { from { opacity: 0; } }
 
-.screen { min-height: 100%; padding-bottom: 104px; display: flex; flex-direction: column; }
+.screen { min-height: 100%; padding-bottom: 126px; display: flex; flex-direction: column; }
 .titlebar { position: relative; flex: none; height: 48px; background: var(--red); display: grid; place-items: center; }
 .titlebar h1 { margin: 0; font: 400 32px/22px var(--display); color: #fff; letter-spacing: 0; animation: title-in 0.38s var(--spring) both; }
 @keyframes title-in { from { transform: translateY(6px); opacity: 0; } }
 .tb-back { position: absolute; left: 14px; top: 0; width: 40px; height: 48px; display: grid; place-items: center; }
 .tb-back img { width: 17px; height: 26px; }
 
-.tabbar { position: absolute; z-index: 6; left: 0; right: 0; bottom: 0; height: 96px; pointer-events: none; }
+/* sits above the home indicator; the white strip below keeps content from showing through */
+.tabbar { position: absolute; z-index: 6; left: 0; right: 0; bottom: 22px; height: 96px; pointer-events: none; }
+.tabbar::after { content: ''; position: absolute; left: 0; right: 0; top: 94px; height: 30px; background: #fff; }
 .tb-shape { position: absolute; left: 0; top: 0; width: 430px; height: 96px; }
 .tb-left, .tb-right { position: absolute; top: 40px; width: 70px; height: 52px; pointer-events: auto; }
 .tb-left { left: 45px; } .tb-right { right: 45px; }

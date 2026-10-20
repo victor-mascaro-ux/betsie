@@ -82,9 +82,9 @@ export function Comments({ id, onClose }: { id: string; onClose: () => void }) {
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } }}
           />
           {text.trim() ? (
-            <button className="c-send tap" onClick={send} aria-label="Send"><img src={sendIcon} alt="" /></button>
+            <button className="c-send tap" onMouseDown={(e) => e.preventDefault()} onClick={() => { send(); (document.activeElement as HTMLElement | null)?.blur?.(); }} aria-label="Send"><img src={sendIcon} alt="" /></button>
           ) : (
-            <button className={`c-send sticker tap${stickers ? ' on' : ''}`} onClick={() => setStickers((v) => !v)} aria-label="Stickers"><img src={stickerIcon} alt="" /></button>
+            <button className={`c-send sticker tap${stickers ? ' on' : ''}`} onMouseDown={(e) => e.preventDefault()} onClick={() => { (document.activeElement as HTMLElement | null)?.blur?.(); setStickers((v) => !v); }} aria-label="Stickers"><img src={stickerIcon} alt="" /></button>
           )}
         </div>
         {stickers && (

@@ -71,7 +71,7 @@
 .bubble.rich.wide { width: 294px; padding: 12px; }
 .bubble.rich ul { margin: 8px 0 0; padding-left: 18px; }
 .bubble.rich li + li { margin-top: 8px; }
-.bubble.buttons { display: grid; gap: 8px; padding: 7px 12px; }
+.bubble.buttons { display: grid; gap: 10px; padding: 12px 14px; }
 .choice {
   min-width: 87px; height: 31px; padding: 0 10px !important; border-radius: 5px; color: #fff; text-align: center !important;
   font: 700 15px/31px var(--display); letter-spacing: 0.02em; transition: opacity 0.2s, background 0.2s, transform 0.25s var(--pop);

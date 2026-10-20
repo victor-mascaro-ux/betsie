@@ -25,6 +25,11 @@ export const betFromText = (t: string) => {
   return /[.!?]$/.test(s) ? s : `${s}.`;
 };
 
+/** Buttons sitting on the keyboard keep the field focused while pressed, so the
+ *  keyboard doesn't drop (and move the button) before the tap lands. */
+export const keepFocus = (e: React.MouseEvent) => e.preventDefault();
+export const blurField = () => (document.activeElement as HTMLElement | null)?.blur?.();
+
 /** The message field grows with what you type (up to five lines, then it scrolls). */
 function GrowingField(props: TextareaHTMLAttributes<HTMLTextAreaElement> & { value: string }) {
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -197,12 +202,12 @@ function Thread({ thread, active, dir, onBack, onOpenThread }: { thread: string;
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } }}
           />
           {text.trim()
-            ? <button className="th-send tap" onClick={send} aria-label="Send">↑</button>
+            ? <button className="th-send tap" onMouseDown={keepFocus} onClick={() => { send(); blurField(); }} aria-label="Send">↑</button>
             : <span className="th-mic">🎙︎</span>}
         </label>
       </div>
       {text && betFromText(text) && !group && (
-        <button className="bet-hint tap" onClick={() => startBet({ text: betFromText(text)! })}>
+        <button className="bet-hint tap" onMouseDown={keepFocus} onClick={() => startBet({ text: betFromText(text)! })}>
           <img src={clover} alt="" /> Make it a bet with {firstName(them[0])}
         </button>
       )}
